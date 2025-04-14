@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .container {
+            max-width: 400px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        input {
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 15px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .weather-info {
+            margin-top: 20px;
+        }
+        img {
+            width: 100px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Weather App</h2>
+        <input type="text" id="city" placeholder="Enter city name">
+        <button id="getWeather">Get Weather</button>
+        <div class="weather-info" id="weather-info"></div>
+    </div>
+    
+    <script>
+        document.getElementById("getWeather").addEventListener("click", async function() {
+            const city = document.getElementById("city").value.trim();
+            if (!city) {
+                document.getElementById("weather-info").innerHTML = "<p>Please enter a city name.</p>";
+                return;
+            }
+            
+            const apiKey = "e455324caffc3e52289687377d9b7c45"; 
+            const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+            
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error("City not found");
+                }
+                
+                const data = await response.json();
+                document.getElementById("weather-info").innerHTML = `
+                    <h3>${data.name}, ${data.sys.country}</h3>
+                    <img src="http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png" alt="Weather icon">
+                    <p>Temperature: ${data.main.temp}°C</p>
+                    <p>Weather: ${data.weather[0].description}</p>
+                `;
+            } catch (error) {
+                document.getElementById("weather-info").innerHTML = `<p>${error.message}</p>`;
+            }
+        });
+    </script>
+</body>
+</html>
